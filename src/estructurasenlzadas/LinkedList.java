@@ -68,7 +68,7 @@ public class LinkedList<T> implements Iterable<T>{
      * Elimna el primer elemento de la estructura
      * @return: el elemento quitado. Si no habia elemento, regresa null 
      */
-    public T removeHead(){
+    public T removeFirst(){
         T removed;
         Nodo<T> auxiliar;
         
@@ -80,6 +80,91 @@ public class LinkedList<T> implements Iterable<T>{
                 fin = null;
             inicio = inicio.getDireccion();
             auxiliar.setDireccion(null);
+        }
+        return removed;
+    }
+    
+    public T removeLast(){
+        Nodo<T> auxiliar;
+        T removed;
+        
+        removed = null;
+        if(!isEmpty()){
+            auxiliar = inicio;
+            removed = fin.getDato();
+            if(auxiliar.getDireccion() == null){//solo hay un dato
+                inicio = null;
+                fin = null;
+            }
+            else{
+                while(fin != auxiliar.getDireccion()){
+                    auxiliar = auxiliar.getDireccion();
+                }
+                auxiliar.setDireccion(null);
+                fin = null;
+            }
+        }
+        return removed;
+    }
+    
+    public T busca(T dato){
+        Iterator<T> iterador;
+       // encontrado;
+        T encontrado, auxiliar;
+        
+        iterador = this.iterator();
+        encontrado = null;
+        while(iterador.hasNext() && encontrado == null){
+            auxiliar = iterador.next();
+            if(auxiliar.equals(dato))
+                encontrado = auxiliar;
+        }
+        return encontrado;
+    }
+    
+    public T buscaRecursiva(T dato){
+        Nodo<T> auxiliar;
+        T encontrado;
+        
+        encontrado = null;
+        if(!isEmpty()){
+            auxiliar = inicio;
+            encontrado = buscaRecursiva(dato, auxiliar);
+        }
+        else
+            encontrado = null;
+        return encontrado;
+    }
+    
+    private T buscaRecursiva(T dato, Nodo<T> auxiliar){
+        if(auxiliar.getDato().equals(dato)){
+            return auxiliar.getDato();
+        }
+        return buscaRecursiva(dato, auxiliar.getDireccion());
+    }
+    
+    public T remove(T dato){
+        Nodo<T> auxiliar;
+        T removed;
+        
+        removed = null;
+        if(!isEmpty()){
+            auxiliar = inicio;
+            if(auxiliar.getDireccion() == null){//solo hay un dato
+                inicio = null;
+                removed = fin.getDato();
+                fin = null;
+            }
+            else{
+                while(!auxiliar.getDireccion().equals(dato) || auxiliar.getDireccion() != null){
+                    auxiliar = auxiliar.getDireccion();
+                }
+                if(auxiliar.getDireccion().equals(dato)){
+                    removed = auxiliar.getDireccion().getDato();
+                    auxiliar.getDireccion().setDato(null);
+                    auxiliar.setDireccion(null);
+                }
+            }
         }
         return removed;
     }
