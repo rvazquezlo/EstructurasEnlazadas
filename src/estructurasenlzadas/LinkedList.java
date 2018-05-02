@@ -5,6 +5,7 @@
  */
 package estructurasenlzadas;
 
+import conjuntos.ConjuntoA;
 import java.util.Iterator;
 
 /**
@@ -58,6 +59,38 @@ public class LinkedList<T> implements Iterable<T>{
         else
             fin.setDireccion(nuevo);
         fin = nuevo;
+    }
+    
+    private boolean insertaAntesQue(T referencia, T nuevo, Nodo<T> auxiliar){
+        Nodo <T> nodoReferencia;
+        
+        try{
+            if(auxiliar.getDireccion().getDato().equals(referencia)){
+                nodoReferencia = auxiliar.getDireccion();
+                auxiliar.setDireccion(new Nodo(nuevo));
+                auxiliar.getDireccion().setDireccion(nodoReferencia);
+                return true;
+            }
+            else
+                return insertaAntesQue(referencia, nuevo, auxiliar.getDireccion());
+        }catch(NullPointerException e){//referencia no esta. El null se da por .getDato() 
+            return false;
+        }
+    }
+    
+    public boolean insertaAntesQue(T referencia, T nuevo){
+        boolean insertado;
+        
+        insertado = false;
+        if(!isEmpty() && referencia != null && nuevo != null){
+            if(referencia.equals(inicio.getDato())){
+                addHead(nuevo);
+                insertado = true;
+            }
+            else
+                insertado = insertaAntesQue(referencia, nuevo, inicio);
+        }
+        return insertado;       
     }
     
     public Iterator<T> iterator(){
@@ -169,6 +202,76 @@ public class LinkedList<T> implements Iterable<T>{
         return removed;
     }
     
+    private boolean eliminaAnteriorA(T dato, Nodo<T> auxiliar){
+        Nodo<T> eliminado;
+        
+        try{
+            if(auxiliar.getDireccion().getDireccion().getDato().equals(dato)){
+                eliminado = auxiliar.getDireccion();
+                auxiliar.setDireccion(eliminado.getDireccion());
+                eliminado = null;
+                return true;
+            }
+            else
+                return eliminaAnteriorA(dato, auxiliar.getDireccion());
+        }catch(NullPointerException e){//llegue al ultimo elemento y dato no estaba
+            return false;
+        }
+    }
+    
+    /**
+     * Funciona asumiendo que no hay datos repetidos
+     * @param dato
+     * @return 
+     */
+    public boolean eliminaAnteriorA(T dato){
+        boolean eliminado;
+        
+        eliminado = false;
+        if(dato != null && !isEmpty() && !dato.equals(inicio.getDato())){
+            if(inicio.getDireccion().getDato().equals(dato)){//hay que eliminar el primer elemento
+                    removeFirst();
+                    eliminado = true;
+            }
+            else
+                eliminado = eliminaAnteriorA(dato, inicio);
+        }
+        return eliminado;
+    }
+    
+    private boolean eliminaSiguienteDe(T dato, Nodo<T> auxiliar){
+        Nodo<T> eliminado;
+        
+        if(auxiliar.getDireccion() != null){//no he llegado a fin 
+            if(auxiliar.getDato().equals(dato)){
+                eliminado = auxiliar.getDireccion();
+                auxiliar.setDireccion(eliminado.getDireccion());
+                eliminado = null;
+                return true;
+            }
+            else
+                return eliminaSiguienteDe(dato, auxiliar.getDireccion());
+        }
+        else//Llegue al fin y dato no esta.
+            return false;
+    }
+    
+    /**
+     * Funciona si dato no esta repetido
+     * @param dato
+     * @return 
+     */
+    public boolean eliminaSiguienteDe(T dato){
+        boolean eliminado;
+        
+        if(!isEmpty() && dato != null && !dato.equals(fin.getDato())){
+            eliminado = eliminaSiguienteDe(dato, inicio);
+        }
+        else 
+            eliminado = false;
+        return eliminado;
+    }
+    
 //    toString alternativo    
 //    public String toString(){
 //        StringBuilder sb;
@@ -212,5 +315,64 @@ public class LinkedList<T> implements Iterable<T>{
         return toString(auxiliar, sb);
     }
      
+    private int eliminaTodosRepetidosOrdenado(Nodo<T> auxiliar){
+        Nodo<T> siguiente, siguienteSiguiente;
+        
+        siguiente = auxiliar.getDireccion();
+        if(siguiente != null){
+            if(siguiente.getDato().equals(auxiliar.getDato())){
+                siguienteSiguiente = siguiente.getDireccion();
+                auxiliar.setDireccion(siguienteSiguiente);
+                siguiente = null;
+                if(siguienteSiguiente != null)//hay mas datos despues del que voy a eliminar
+                    return 1 + eliminaTodosRepetidosOrdenado(auxiliar);
+                else//el dato que voy a eliminar es el ultimo
+                    return 1;
+            }
+            else
+                return eliminaTodosRepetidosOrdenado(siguiente);
+        }
+        else//auxiliar es fin
+            return 0;
+    }
+    
+    public int eliminaTodosRepetidosOrdenado(){
+        int eliminados;
+        
+        eliminados = 0;
+        if(!isEmpty() && inicio != fin)
+            eliminados = eliminaTodosRepetidosOrdenado(inicio);
+        return eliminados;
+    }
+    
+    private int eliminaTodosRepetidosDesordenado(ConjuntoA<T> conjunto, Nodo<T> auxiliar){
+        Nodo<T> siguiente;
+        
+        siguiente = auxiliar.getDireccion();
+        if(siguiente != null){
+            if(!conjunto.add(siguiente.getDato())){//esta repetido
+                auxiliar.setDireccion(siguiente.getDireccion());
+                siguiente = null;
+                return 1 + eliminaTodosRepetidosDesordenado(conjunto, auxiliar);
+            }
+            else
+                return eliminaTodosRepetidosDesordenado(conjunto, siguiente);
+        }
+        else//auxiliar es fin
+            return 0;    
+    }
+    
+    public int eliminaTodosRepetidosDesordenado(){
+        ConjuntoA<T> conjunto;
+        int contador; 
+        
+        contador = 0;
+        if(!isEmpty()){
+            conjunto = new ConjuntoA();
+            conjunto.add(inicio.getDato());
+            contador = eliminaTodosRepetidosDesordenado(conjunto, inicio);
+        }
+        return contador;
+    }
      
 }
