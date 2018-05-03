@@ -239,7 +239,7 @@ public class LinkedList<T> implements Iterable<T>{
         boolean eliminado;
         
         eliminado = false;
-        if(dato != null && !isEmpty() && !dato.equals(inicio.getDato())){
+        if(dato != null && !isEmpty() && !dato.equals(inicio.getDato()) && inicio != fin){
             if(inicio.getDireccion().getDato().equals(dato)){//hay que eliminar el primer elemento
                     removeFirst();
                     eliminado = true;
