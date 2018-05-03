@@ -134,7 +134,7 @@ public class LinkedList<T> implements Iterable<T>{
                     auxiliar = auxiliar.getDireccion();
                 }
                 auxiliar.setDireccion(null);
-                fin = null;
+                fin = auxiliar;
             }
         }
         return removed;
@@ -170,10 +170,14 @@ public class LinkedList<T> implements Iterable<T>{
     }
     
     private T buscaRecursiva(T dato, Nodo<T> auxiliar){
-        if(auxiliar.getDato().equals(dato)){
-            return auxiliar.getDato();
+        try{   
+            if(auxiliar.getDato().equals(dato)){
+                return auxiliar.getDato();
+            }
+            return buscaRecursiva(dato, auxiliar.getDireccion());
+        }catch(NullPointerException e){
+            return null;
         }
-        return buscaRecursiva(dato, auxiliar.getDireccion());
     }
     
     public T remove(T dato){
@@ -188,15 +192,22 @@ public class LinkedList<T> implements Iterable<T>{
                 removed = fin.getDato();
                 fin = null;
             }
+            else if(inicio.getDato().equals(dato)){
+                removed = removeFirst();
+            }
             else{
-                while(!auxiliar.getDireccion().equals(dato) || auxiliar.getDireccion() != null){
-                    auxiliar = auxiliar.getDireccion();
-                }
-                if(auxiliar.getDireccion().equals(dato)){
-                    removed = auxiliar.getDireccion().getDato();
-                    auxiliar.getDireccion().setDato(null);
-                    auxiliar.setDireccion(null);
-                }
+                try{
+                    while(!auxiliar.getDireccion().getDato().equals(dato)){
+                        auxiliar = auxiliar.getDireccion();
+                    }
+                    if(auxiliar.getDireccion().getDato().equals(dato)){
+                        removed = auxiliar.getDireccion().getDato();
+                        auxiliar.getDireccion().setDato(null);
+                        auxiliar.setDireccion(auxiliar.getDireccion().getDireccion());
+                    }
+                }catch(NullPointerException e){
+                    
+                }  
             }
         }
         return removed;
