@@ -23,6 +23,22 @@ public class LinkedList<T> implements Iterable<T>{
         inicio = null;
         fin = null;
     }
+
+    private Nodo<T> getInicio() {
+        return inicio;
+    }
+
+    private Nodo<T> getFin() {
+        return fin;
+    }
+
+    private void setInicio(Nodo<T> inicio) {
+        this.inicio = inicio;
+    }
+
+    private void setFin(Nodo<T> fin) {
+        this.fin = fin;
+    }
     
     /**
      * Determina si la lista esta vacia
@@ -195,6 +211,8 @@ public class LinkedList<T> implements Iterable<T>{
             else if(inicio.getDato().equals(dato)){
                 removed = removeFirst();
             }
+            else if(fin.getDato().equals(dato))
+                removed = removeLast();
             else{
                 try{
                     while(!auxiliar.getDireccion().getDato().equals(dato)){
@@ -256,6 +274,8 @@ public class LinkedList<T> implements Iterable<T>{
         if(auxiliar.getDireccion() != null){//no he llegado a fin 
             if(auxiliar.getDato().equals(dato)){
                 eliminado = auxiliar.getDireccion();
+                if(eliminado == fin)
+                    fin = auxiliar;
                 auxiliar.setDireccion(eliminado.getDireccion());
                 eliminado = null;
                 return true;
@@ -343,8 +363,10 @@ public class LinkedList<T> implements Iterable<T>{
             else
                 return eliminaTodosRepetidosOrdenado(siguiente);
         }
-        else//auxiliar es fin
+        else{//auxiliar es fin
+            fin = auxiliar;
             return 0;
+        }
     }
     
     public int eliminaTodosRepetidosOrdenado(){
@@ -369,8 +391,10 @@ public class LinkedList<T> implements Iterable<T>{
             else
                 return eliminaTodosRepetidosDesordenado(conjunto, siguiente);
         }
-        else//auxiliar es fin
-            return 0;    
+        else{//auxiliar es fin
+            fin = auxiliar;
+            return 0;   
+        }
     }
     
     public int eliminaTodosRepetidosDesordenado(){
@@ -385,5 +409,49 @@ public class LinkedList<T> implements Iterable<T>{
         }
         return contador;
     }
+    
+    private void mezclaEstructuras(Nodo<T> aux, Nodo<T> aux2, Nodo<T> actual){
+        if(aux != null){
+            actual.setDireccion(aux);
+            aux = aux.getDireccion();
+            actual = actual.getDireccion();
+            if(aux2 != null){
+                actual.setDireccion(aux2);
+                aux2 = aux2.getDireccion();
+            }
+        }
+        else{//ya no hay nada mas que agregar
+            
+        }
+            
+    }
+    
+    public void mezclaEstructuras(LinkedList<T> dos){
+        boolean vacia, dosVacia;
+        Nodo<T> aux, aux2, actual;
+        
+        if(dos != null){
+            vacia = isEmpty();
+            dosVacia = dos.isEmpty();
+            if(!vacia && !dosVacia){//ninguna vacia
+                aux = inicio.getDireccion();
+                aux2 = dos.getInicio().getDireccion();
+                inicio.setDireccion(dos.getInicio());
+                actual = dos.getInicio();
+            }
+            else if(vacia && !dosVacia){//solo this vacia. No 
+                
+            }
+            else if(!vacia && dosVacia){//solo dos vacia
+                
+            }
+            else{//Las dos vacias
+                
+            }
+        }
+        
+    }
+    
+    
      
 }
