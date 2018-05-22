@@ -60,8 +60,10 @@ public class EstructurasEnlzadas {
         System.out.println("2, 3, 7, 1, 3, 3, 5, 4: " + estructura.toString());
         
 //        estructura = new LinkedList();
-//        System.out.println("false: " + estructura.insertaAntesQue(8, 5));
-//        System.out.println("vacia: " + estructura.toString());
+//        estructura.addHead(8);
+//        
+//        System.out.println("\n\ntrue: " + estructura.insertaAntesQue(8, 5));
+//        System.out.println("5, 8: " + estructura.toString());
 
         System.out.println("2: " + estructura.removeFirst());
         System.out.println("3, 7, 1, 3, 3, 5, 4: " + estructura.toString());

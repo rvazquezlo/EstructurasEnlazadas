@@ -23,6 +23,22 @@ public class LinkedList<T> implements Iterable<T>{
         inicio = null;
         fin = null;
     }
+
+    private Nodo<T> getInicio() {
+        return inicio;
+    }
+
+    private Nodo<T> getFin() {
+        return fin;
+    }
+
+    private void setInicio(Nodo<T> inicio) {
+        this.inicio = inicio;
+    }
+
+    private void setFin(Nodo<T> fin) {
+        this.fin = fin;
+    }
     
     /**
      * Determina si la lista esta vacia
@@ -195,6 +211,8 @@ public class LinkedList<T> implements Iterable<T>{
             else if(inicio.getDato().equals(dato)){
                 removed = removeFirst();
             }
+            else if(fin.getDato().equals(dato))
+                removed = removeLast();
             else{
                 try{
                     while(!auxiliar.getDireccion().getDato().equals(dato)){
@@ -239,7 +257,7 @@ public class LinkedList<T> implements Iterable<T>{
         boolean eliminado;
         
         eliminado = false;
-        if(dato != null && !isEmpty() && !dato.equals(inicio.getDato())){
+        if(dato != null && !isEmpty() && !dato.equals(inicio.getDato()) && inicio != fin){
             if(inicio.getDireccion().getDato().equals(dato)){//hay que eliminar el primer elemento
                     removeFirst();
                     eliminado = true;
@@ -256,6 +274,8 @@ public class LinkedList<T> implements Iterable<T>{
         if(auxiliar.getDireccion() != null){//no he llegado a fin 
             if(auxiliar.getDato().equals(dato)){
                 eliminado = auxiliar.getDireccion();
+                if(eliminado == fin)
+                    fin = auxiliar;
                 auxiliar.setDireccion(eliminado.getDireccion());
                 eliminado.setDireccion(null);//romper ties con el eliminado
                 return true;
@@ -350,9 +370,10 @@ public class LinkedList<T> implements Iterable<T>{
             else
                 return eliminaTodosRepetidosOrdenado(siguiente);
         }
-        else//auxiliar es fin
+        else{//auxiliar es fin
             fin = auxiliar;
             return 0;
+        }
     }
     
     /**
@@ -392,8 +413,10 @@ public class LinkedList<T> implements Iterable<T>{
             else
                 return eliminaTodosRepetidosDesordenado(conjunto, siguiente);
         }
-        else//auxiliar es fin
-            return 0;    
+        else{//auxiliar es fin
+            fin = auxiliar;
+            return 0;   
+        }
     }
     
     /**
@@ -415,6 +438,7 @@ public class LinkedList<T> implements Iterable<T>{
         return contador;
     }
     
+
     /**
      * Determina si dos ee son iguales, comparando elemento por elemento
      * @param otra
@@ -515,5 +539,7 @@ public class LinkedList<T> implements Iterable<T>{
         }
         return otra;
     }
+
+    
      
 }
